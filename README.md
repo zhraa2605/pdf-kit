@@ -52,27 +52,18 @@ Let's make this library even better together. 🚀
 
 ---
 
-## 📜 License
-
-[MIT](LICENSE) — because good software should be free and free of drama.
-
----
 
 ## ✨ Future Plans
 
 - Add advanced compression options
 - Support for encrypted PDFs
 - CLI Tool for quick compression from the terminal
-- NPM package publishing
-- More magic coming soon... 🔮
 
----
+
 
 ## 🧙 About the Author
 
 Built with ☕, 💻, and occasional chaos by [@zhraa2605](https://github.com/zhraa2605).
 
 ---
-
-⚡ **Let’s make PDFs lighter. The world deserves it.**
 
