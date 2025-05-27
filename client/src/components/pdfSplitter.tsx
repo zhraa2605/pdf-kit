@@ -5,89 +5,76 @@ import { api } from "../utils/api";
 
 const PdfSplitter = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [numFiles, setNumFiles] = useState<number>(1); // New state for number of files
-  const [splitFiles, setSplitFiles] = useState<string[]>([]); // State to store split files
+  const [loading, setLoading] = useState(false);
+  const [numFiles, setNumFiles] = useState(1);
+  const [splitFiles, setSplitFiles] = useState<string[]>([]);
 
-  // Handle file input change
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
+    if (file) setSelectedFile(file);
   };
 
-  // Handle number of files input change
   const handleNumFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value, 10);
-    if (value > 0) {
-      setNumFiles(value); // Update number of files to split into
-    }
+    if (value > 0) setNumFiles(value);
   };
 
-  // Handle file upload and PDF splitting
   const handleUpload = async () => {
     if (!selectedFile) {
-      toast.error("Please select a file to upload.");
+      toast.error("Please select a PDF file first.");
       return;
     }
 
     const formData = new FormData();
     formData.append("pdfFile", selectedFile);
-    formData.append("numFiles", numFiles.toString()); // Add the number of files to the form data
+    formData.append("numFiles", numFiles.toString());
 
     setLoading(true);
     try {
       const response = await api.post("/split-pdf", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      // Check if the response contains the correct data (split file paths)
-      if (response.data && response.data.files) {
-        setSplitFiles(response.data.files); // Store split file URLs
+      if (response.data?.files) {
+        setSplitFiles(response.data.files);
         toast.success("PDF successfully split!");
       } else {
-        toast.error("No split files found in the response.");
+        toast.error("No split files returned from the server.");
       }
-    } catch (error) {
-      toast.error("Error splitting PDF.");
+    } catch (error: any) {
       console.error("Error:", error);
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Error splitting PDF.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle downloading the file
-  // In PdfSplitter.tsx
   const handleDownload = async (filePath: string) => {
     try {
-      // Extract the filename from the path
-      const fileName = filePath.split("/").pop() || filePath; // Fallback to full path if split fails
-      const encodedFileName = encodeURIComponent(fileName); // Encode special characters
+      const fileName = filePath.split("/").pop() || "split.pdf";
+      const encodedName = encodeURIComponent(fileName);
 
-      const response = await api.get(`/download/split/${encodedFileName}`, {
+      const response = await api.get(`/download/split/${encodedName}`, {
         responseType: "blob",
       });
 
-      // Create a download link
-      const blob = response.data;
-      const url = window.URL.createObjectURL(blob);
+      const url = window.URL.createObjectURL(response.data);
       const link = document.createElement("a");
       link.href = url;
       link.download = fileName;
       link.click();
       window.URL.revokeObjectURL(url);
-    } catch (error : string | any ){
-      console.error("Error downloading file:", error);
-      if (error.response && error.response.data && error.response.data.message) {
-        toast.error(error.response.data.message); // Show backend error message in toast
-
+    } catch (error: any) {
+      console.error("Download error:", error);
+      toast.error(
+        error.response?.data?.message || "Error downloading split file."
+      );
     }
   };
-  
-      }
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -97,34 +84,28 @@ const PdfSplitter = () => {
       </h2>
 
       <div className="mb-4">
-        <label
-          htmlFor="fileInput"
-          className="block text-lg font-medium text-gray-600"
-        >
+        <label htmlFor="fileInput" className="block text-lg font-medium text-gray-600">
           Choose a PDF file
         </label>
         <input
           type="file"
           accept="application/pdf"
-          onChange={handleFileChange}
           id="fileInput"
+          onChange={handleFileChange}
           className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
 
       <div className="mb-4">
-        <label
-          htmlFor="numFiles"
-          className="block text-lg font-medium text-gray-600"
-        >
+        <label htmlFor="numFiles" className="block text-lg font-medium text-gray-600">
           Number of Parts
         </label>
         <input
           type="number"
+          id="numFiles"
+          min={1}
           value={numFiles}
           onChange={handleNumFilesChange}
-          min={1}
-          id="numFiles"
           className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
@@ -139,19 +120,15 @@ const PdfSplitter = () => {
         {loading ? "Splitting PDF..." : "Split PDF"}
       </button>
 
-      {/* Display the split PDFs with download buttons */}
       {splitFiles.length > 0 && (
         <div className="mt-6">
           <h3 className="text-xl font-semibold mb-4">Split PDF Files</h3>
           <ul>
-            {splitFiles.map((fileName, index) => (
-              <li
-                key={index}
-                className="mb-2 flex justify-between items-center"
-              >
-                <span className="text-blue-600">{fileName}</span>
+            {splitFiles.map((file, index) => (
+              <li key={index} className="mb-2 flex justify-between items-center">
+                <span className="text-blue-600">{file}</span>
                 <button
-                  onClick={() => handleDownload(fileName)} // Pass filename, not path
+                  onClick={() => handleDownload(file)}
                   className="text-sm text-white bg-green-500 hover:bg-green-600 px-3 py-1 rounded-lg transition-colors duration-200"
                 >
                   Download
@@ -163,8 +140,6 @@ const PdfSplitter = () => {
       )}
     </div>
   );
-  
 };
-
 
 export default PdfSplitter;

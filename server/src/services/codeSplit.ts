@@ -18,16 +18,6 @@ export const splitPDF = async (fileBuffer: Buffer, numParts: number): Promise<st
     // Calculate number of pages per part
     const pagesPerPart = Math.ceil(pageCount / numParts);
 
-    if (pageCount === 1) {
-      throw new Error('PDF has only one page, cannot split further');
-
-    }
-
-    // Check if the number of parts exceeds the number of pages
-    if (numParts > pageCount) {
-      throw new Error('Number of parts cannot be greater than the number of pages in the PDF');
-    }
-
   
 
     // Define the output directory for split files

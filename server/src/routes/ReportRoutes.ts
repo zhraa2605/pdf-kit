@@ -3,6 +3,7 @@ import { generateReport } from '../controllers/reportController';
 import { mergeFiles } from '../controllers/UploadControllers';
 import { splitPDFController  , downloadSplitPDF} from '../controllers/splitControllers';
 import upload  from '../middleware/upload';
+import { createPdf } from '../controllers/PdfController';
 
 const router = express.Router();
 
@@ -43,5 +44,9 @@ router.get('/download/:fileName', (req: Request, res: Response) => {
 router.post("/merge-files", upload.array("files"), mergeFiles);
 router.post("/split-pdf", upload.single("pdfFile"),  splitPDFController);
 router.get('/download/split/:fileName', downloadSplitPDF);
+// router.post("/compress-pdf", upload.single("pdfFile"), compressPdfController);
+router.post('/generate-pdf', async (req: Request, res: Response) => {
+  await createPdf(req, res);
+});
 
 export default router;

@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import FileUpload from "./components/Upload";
 import ReportForm from "./components/ReportForm";
 import PdfSplitter from "./components/pdfSplitter";
+import GenerateBlocksPage from "./components/generate";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
           <Route path="/generate" element={<ReportForm />} />
           <Route path="/merge" element={<FileUpload />} />
           <Route path="/split" element={<PdfSplitter />} />
+          <Route path="/pdf" element={<GenerateBlocksPage />} />
         </Routes>
       </div>
     </Router>

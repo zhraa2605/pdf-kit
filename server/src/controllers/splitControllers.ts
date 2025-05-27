@@ -29,6 +29,22 @@ export const splitPDFController = async (req: Request, res: Response) => {
 
     // Get the number of parts (default to 1 if not provided)
     const numParts = parseInt(req.body.numFiles, 10) || 1;
+    const pageNum = parseInt(req.body.pageNum, 10) || 1;
+
+    if (numParts <= 0) {
+      res.status(400).json({ message: 'Invalid number of parts' });
+      return;
+    }
+    if (pageNum < 2) {
+      res.status(400).json({ message: 'PDF file must have more than one page' });
+      return;
+    }
+
+    if ( pageNum > numParts) {
+      res.status(400).json({ message: 'Number of parts must be greater than or equal to number of pages' });
+      return;
+    }
+
 
     // Call the splitPDF function with the buffer
     const splitFiles = await splitPDF(fileBuffer, numParts);

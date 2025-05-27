@@ -28,6 +28,9 @@ const upload = multer({
   storage,
   limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit
 });
+// before your routes
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Serve static files (like merged reports)
 app.use(express.static("public") );
 app.use('/splitted', express.static(path.join(process.cwd(), 'src', 'uploads', 'splitted')));
