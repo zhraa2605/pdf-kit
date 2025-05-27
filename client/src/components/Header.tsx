@@ -22,6 +22,9 @@ const Header = () => {
           <Link to="/split" className={linkClass("/split")}>
             Split PDF
           </Link>
+          <Link to="/pdf" className={linkClass("/convert")}>
+            Generate PDF
+          </Link>
 
         </nav>
       </div>

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { splitPDF } from '../services/codeSplit';
 import fs from 'fs';
 import path from 'path';
+import { PDFDocument } from 'pdf-lib';
 
 /**
  * Handles the request to split a PDF into a specified number of parts.
@@ -29,7 +30,10 @@ export const splitPDFController = async (req: Request, res: Response) => {
 
     // Get the number of parts (default to 1 if not provided)
     const numParts = parseInt(req.body.numFiles, 10) || 1;
-    const pageNum = parseInt(req.body.pageNum, 10) || 1;
+const pdfDoc = await PDFDocument.load(fileBuffer);
+const pageNum = pdfDoc.getPageCount();
+    console.log('Number of parts:', numParts);
+    console.log('Number of pages:', pageNum);
 
     if (numParts <= 0) {
       res.status(400).json({ message: 'Invalid number of parts' });
@@ -40,8 +44,8 @@ export const splitPDFController = async (req: Request, res: Response) => {
       return;
     }
 
-    if ( pageNum > numParts) {
-      res.status(400).json({ message: 'Number of parts must be greater than or equal to number of pages' });
+    if ( numParts > pageNum) {
+      res.status(400).json({ message: 'Number of parts must be less than or equal to number of pages' });
       return;
     }
 
