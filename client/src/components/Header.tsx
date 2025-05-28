@@ -11,20 +11,21 @@ const Header = () => {
   return (
     <header className="bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+        <Link to="/" className="flex items-center space-x-2">
         <h1 className="text-xl font-bold text-gray-800">PDF Toolkit</h1>
+        </Link>
         <nav className="space-x-6">
-          <Link to="/generate" className={linkClass("/generate")}>
-            Generate Report
+           <Link to="/pdf" className={linkClass("/convert")}>
+            Generate PDF
           </Link>
+
           <Link to="/merge" className={linkClass("/merge")}>
             Merge PDF Files
           </Link>
           <Link to="/split" className={linkClass("/split")}>
             Split PDF
           </Link>
-          <Link to="/pdf" className={linkClass("/convert")}>
-            Generate PDF
-          </Link>
+         
 
         </nav>
       </div>

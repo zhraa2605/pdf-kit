@@ -1,21 +1,10 @@
 import express, { Request, Response } from 'express';
-import { generateReport } from '../controllers/reportController';
 import { mergeFiles } from '../controllers/UploadControllers';
 import { splitPDFController  , downloadSplitPDF} from '../controllers/splitControllers';
 import upload  from '../middleware/upload';
 import { createPdf } from '../controllers/PdfController';
 
 const router = express.Router();
-
-
-router.post('/generate', async (req: Request, res: Response) => {
-  try {
-    await generateReport(req, res);  // Calling the async function properly
-  } catch (error) {
-    console.error("Error handling /generate route:", error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
 
 router.get('/download/:fileName', (req: Request, res: Response) => {
   const { fileName } = req.params;

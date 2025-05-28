@@ -1,9 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, } from "react-router-dom";
 import Header from "./components/Header";
-import FileUpload from "./components/Upload";
-import ReportForm from "./components/ReportForm";
-import PdfSplitter from "./components/pdfSplitter";
-import GenerateBlocksPage from "./components/generate";
+import MergeFiles from "./components/merge/Merge";
+import PdfSplitter from "./components/Split/pdfSplitter";
+import GenerateBlocksPage from "./components/generatePdf/generate";
+import HomePage from "./components/HomePage";
 
 const App = () => {
   return (
@@ -11,9 +11,8 @@ const App = () => {
       <Header />
       <div className="p-4">
         <Routes>
-          <Route path="/" element={<Navigate to="/generate" replace />} />
-          <Route path="/generate" element={<ReportForm />} />
-          <Route path="/merge" element={<FileUpload />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/merge" element={<MergeFiles />} />
           <Route path="/split" element={<PdfSplitter />} />
           <Route path="/pdf" element={<GenerateBlocksPage />} />
         </Routes>

@@ -3,6 +3,8 @@
 import path from "path";
 import { PDFDocument } from "pdf-lib";
 import fs from 'fs';
+import os from 'os';
+
 // Merge PDFs
 
 // takes the mergepdf a filepath
@@ -23,8 +25,8 @@ import fs from 'fs';
 export const mergePDFs = async (filePaths: string[]): Promise<string> => {
   // Create a new PDF document
     const mergedPdf = await PDFDocument.create();
-    // Select output directory
-    const outputDir = path.join(process.cwd(), "src", "uploads" , "Merged"); // Use absolute path
+    // Use system temp directory
+    const outputDir = os.tmpdir();
     
   
     try {
@@ -64,4 +66,3 @@ export const mergePDFs = async (filePaths: string[]): Promise<string> => {
       throw error;
     }
   };
-  

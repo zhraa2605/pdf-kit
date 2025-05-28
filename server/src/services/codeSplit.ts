@@ -21,10 +21,6 @@ export const splitPDF = async (fileBuffer: Buffer, numParts: number): Promise<st
   
 
     // Define the output directory for split files
-    const outputDir = path.join(process.cwd(), 'src', 'uploads', 'splitted');
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
 
     const splitFiles: string[] = [];
 
@@ -39,8 +35,6 @@ export const splitPDF = async (fileBuffer: Buffer, numParts: number): Promise<st
       copiedPages.forEach((page) => newPdf.addPage(page));
 
       const newPdfBytes = await newPdf.save();
-      const outputPath = path.join(outputDir, `part-${partIndex + 1}.pdf`);
-      fs.writeFileSync(outputPath, newPdfBytes);
       splitFiles.push(`part-${partIndex + 1}.pdf`);
 
       
